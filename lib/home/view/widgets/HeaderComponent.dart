@@ -10,11 +10,9 @@ class HeaderComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      // height: 127,
       color: Colors.white,
       child: Column(
         children: [
-          // Header Title
           Container(
             width: double.infinity,
             height: 80,

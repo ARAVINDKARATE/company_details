@@ -21,7 +21,6 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
   @override
   void initState() {
     super.initState();
-    // Delay the fetch until after the current build phase
     Future.microtask(() {
       Provider.of<CompanyProvider>(context, listen: false).fetchCompanies();
     });
@@ -56,7 +55,7 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
                     child: TextField(
                       controller: _searchController,
                       onChanged: (value) {
-                        setState(() {}); // Rebuild the widget when text changes
+                        setState(() {});
                       },
                       decoration: InputDecoration(
                         hintText: widget.searchHint,
@@ -90,7 +89,6 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
             ),
           ),
 
-          // Results List
           if (companyProvider.isLoading)
             Center(child: CircularProgressIndicator())
           else
@@ -107,7 +105,7 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
                             company.companyName,
                             company.rating,
                             company.logo,
-                            _searchController.text, // Pass the search query
+                            _searchController.text,
                           );
                         }).toList(),
                   ),
@@ -190,7 +188,6 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
   }
 
   Widget _buildHighlightedText(String text, String query, bool isTitle) {
-    // Define the base text style (same as when query is empty)
     final TextStyle baseStyle = TextStyle(
       color: isTitle ? Color(0xFF1E2939) : Color(0xFF99A1AF),
       fontSize: 12,
@@ -199,7 +196,6 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
     );
 
     if (query.isEmpty) {
-      // No search, return normal text formatting with last 4 bold for title
       return isTitle
           ? _buildTextWithBoldLast4Chars(text, isTitle)
           : Text(text, style: baseStyle);
@@ -213,22 +209,15 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
 
     while ((indexOfMatch = lowerText.indexOf(lowerQuery, start)) != -1) {
       if (indexOfMatch > start) {
-        // Unmatched part of the text
         textSpans.add(
-          TextSpan(
-            text: text.substring(start, indexOfMatch),
-            style: baseStyle, // Use the base style
-          ),
+          TextSpan(text: text.substring(start, indexOfMatch), style: baseStyle),
         );
       }
 
-      // Matched part of the text (with background color but same text style)
       textSpans.add(
         TextSpan(
           text: text.substring(indexOfMatch, indexOfMatch + query.length),
-          style: baseStyle.copyWith(
-            backgroundColor: Color(0x29D97706), // Background highlight
-          ),
+          style: baseStyle.copyWith(backgroundColor: Color(0x29D97706)),
         ),
       );
 
@@ -236,57 +225,46 @@ class SearchSuggestionWidgetState extends State<SearchSuggestionWidget> {
     }
 
     if (start < text.length) {
-      // Remaining unmatched part of the text
-      textSpans.add(
-        TextSpan(
-          text: text.substring(start),
-          style: baseStyle, // Use the base style
-        ),
-      );
+      textSpans.add(TextSpan(text: text.substring(start), style: baseStyle));
     }
 
     return RichText(text: TextSpan(children: textSpans));
   }
 
-  /// Helper method to make the last 4 characters bold for the title
   Widget _buildTextWithBoldLast4Chars(String text, bool isTitle) {
     if (text.length <= 4) {
-      // If the text is 4 characters or less, make the entire text bold
       return Text(
         text,
         style: TextStyle(
           color: isTitle ? Color(0xFF1E2939) : Color(0xFF99A1AF),
           fontSize: 12,
-          fontWeight: FontWeight.bold, // Make the entire text bold
+          fontWeight: FontWeight.bold,
           fontFamily: 'Inter',
         ),
       );
     }
 
-    // Split the text into normal and bold parts
     final normalPart = text.substring(0, text.length - 4);
     final boldPart = text.substring(text.length - 4);
 
     return RichText(
       text: TextSpan(
         children: [
-          // Normal part of the text
           TextSpan(
             text: normalPart,
             style: TextStyle(
               color: Color(0xFF99A1AF),
               fontSize: 12,
-              fontWeight: FontWeight.bold, // Normal weight
+              fontWeight: FontWeight.bold,
               fontFamily: 'Inter',
             ),
           ),
-          // Bold part of the text (last 4 characters)
           TextSpan(
             text: boldPart,
             style: TextStyle(
               color: isTitle ? Color(0xFF1E2939) : Color(0xFF99A1AF),
               fontSize: 13,
-              fontWeight: FontWeight.bold, // Bold weight
+              fontWeight: FontWeight.bold,
               fontFamily: 'Inter',
             ),
           ),

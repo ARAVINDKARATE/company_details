@@ -23,7 +23,7 @@ class _CompanyDetailLayoutState extends State<CompanyDetailLayout> {
           children: [
             Row(
               children: [
-                // Back Button
+                SizedBox(width: 10),
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -34,14 +34,13 @@ class _CompanyDetailLayoutState extends State<CompanyDetailLayout> {
                     child: Center(
                       child: Image.asset(
                         'assets/back_button.png',
-                        width: 18,
-                        height: 18,
+                        width: 30,
+                        height: 30,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Frame for additional content (empty in this case)
                 Expanded(child: Container(height: 24)),
               ],
             ),

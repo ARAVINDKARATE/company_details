@@ -6,7 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 
 class FinancialsIssuerDetailsComponent extends StatefulWidget {
-  const FinancialsIssuerDetailsComponent({super.key});
+  const FinancialsIssuerDetailsComponent({Key? key}) : super(key: key);
 
   @override
   FinancialsIssuerDetailsComponentState createState() =>
@@ -17,7 +17,6 @@ class FinancialsIssuerDetailsComponentState
     extends State<FinancialsIssuerDetailsComponent> {
   bool isEbitda = true;
 
-  // X-axis labels for months
   final List<String> xAxisLabels = [
     'J',
     'F',
@@ -141,22 +140,14 @@ class FinancialsIssuerDetailsComponentState
     final ebitdaData = financials['ebitda'] as List<dynamic>;
     final revenueData = financials['revenue'] as List<dynamic>;
 
-    // Debug: Print revenue values
     log('Revenue Data: $revenueData');
 
-    // Determine the maximum value in the dataset
-    final data =
-        isEbitda
-            ? revenueData
-            : revenueData; // Use revenue for maxY in both charts
+    final data = isEbitda ? revenueData : revenueData;
     final maxValue = data
-        .map<double>(
-          (item) => item['value'] / 1000000.0,
-        ) // Convert to lakhs (ensure it's double)
+        .map<double>((item) => item['value'] / 1000000.0)
         .reduce((a, b) => a > b ? a : b);
 
-    // Add some padding to the maxY value to ensure bars fit within the chart area
-    final maxY = maxValue * 1.2; // Adjust the multiplier as needed
+    final maxY = maxValue * 1.2;
 
     return Container(
       height: 158,
@@ -167,7 +158,7 @@ class FinancialsIssuerDetailsComponentState
             BarChartData(
               gridData: FlGridData(
                 show: true,
-                horizontalInterval: maxY / 6, // Adjust intervals dynamically
+                horizontalInterval: maxY / 6,
                 getDrawingHorizontalLine: (value) {
                   return FlLine(
                     color: Colors.grey[400]!,
@@ -185,7 +176,7 @@ class FinancialsIssuerDetailsComponentState
                     dashArray: [5, 5],
                   );
                 },
-                verticalInterval: 0.085, // Adjust for better visibility
+                verticalInterval: 0.085,
                 drawVerticalLine: true,
               ),
               titlesData: FlTitlesData(
@@ -207,7 +198,7 @@ class FinancialsIssuerDetailsComponentState
                     showTitles: true,
                     getTitlesWidget: (value, meta) {
                       if (value == 0 || value == maxY) {
-                        return Container(); // Hide "0L" and maxY label
+                        return Container();
                       }
                       return Text(
                         '\u20B9${value.toInt()}L',
@@ -229,12 +220,11 @@ class FinancialsIssuerDetailsComponentState
                 isEbitda ? ebitdaData : revenueData,
                 maxY,
               ),
-              maxY: maxY, // Set maxY dynamically
+              maxY: maxY,
             ),
           ),
-          // Add "2024" and "2025" labels
           Positioned(
-            left: 110, // Adjust this value to position "2024"
+            left: 110,
             top: 4,
             child: Text(
               '2024',
@@ -242,7 +232,7 @@ class FinancialsIssuerDetailsComponentState
             ),
           ),
           Positioned(
-            left: 140, // Adjust this value to position "2025"
+            left: 140,
             top: 4,
             child: Text(
               '2025',
@@ -255,7 +245,7 @@ class FinancialsIssuerDetailsComponentState
   }
 
   List<BarChartGroupData> _buildBarGroups(List<dynamic> data, double maxY) {
-    final ebitdaData = data; // EBITDA data
+    final ebitdaData = data;
     final revenueData =
         isEbitda
             ? Provider.of<CompanyDetailsProvider>(
@@ -263,17 +253,12 @@ class FinancialsIssuerDetailsComponentState
                   listen: false,
                 ).companyDetails!.financials['revenue']
                 as List<dynamic>
-            : data; // Revenue data (use the same data for revenue chart)
+            : data;
 
     return List.generate(xAxisLabels.length, (index) {
-      final ebitdaValue =
-          ebitdaData[index]['value'] /
-          1000000.0; // Convert to lakhs (ensure it's double)
-      final revenueValue =
-          revenueData[index]['value'] /
-          1000000.0; // Convert to lakhs (ensure it's double)
+      final ebitdaValue = ebitdaData[index]['value'] / 1000000.0;
+      final revenueValue = revenueData[index]['value'] / 1000000.0;
 
-      // Debug: Print bar heights
       log('Revenue Bar Height: $revenueValue');
 
       return BarChartGroupData(
@@ -298,10 +283,7 @@ class FinancialsIssuerDetailsComponentState
                       ),
                     ],
             fromY: 0.0,
-            toY:
-                isEbitda
-                    ? revenueValue
-                    : revenueValue, // Ensure toY is set correctly
+            toY: isEbitda ? revenueValue : revenueValue,
             color: Colors.transparent,
             width: 12,
             borderRadius: BorderRadius.circular(2),

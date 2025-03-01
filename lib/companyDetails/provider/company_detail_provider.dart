@@ -1,12 +1,18 @@
-import 'package:comapany_details/companyDetails/model/company_detail_model.dart';
-import 'package:flutter/material.dart';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:comapany_details/companyDetails/model/company_detail_model.dart';
 
 class CompanyDetailsProvider with ChangeNotifier {
   CompanyDetails? _companyDetails;
 
   CompanyDetails? get companyDetails => _companyDetails;
+
+  set companyDetails(CompanyDetails? value) {
+    _companyDetails = value;
+    notifyListeners();
+  }
 
   Future<void> fetchCompanyDetails() async {
     final response = await http.get(
